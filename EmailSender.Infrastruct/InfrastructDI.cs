@@ -18,7 +18,7 @@ namespace EmailSender.Infrastruct
         {
             services.AddDbContext<ApplicationDbContext>(ops =>
             {
-                ops.UseNpgsql(configuration.GetConnectionString(""));
+                ops.UseNpgsql(configuration.GetConnectionString("CS"));
             });
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<IRegisterRepository, RegisterRepository>();
