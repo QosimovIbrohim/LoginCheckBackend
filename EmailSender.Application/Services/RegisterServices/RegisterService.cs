@@ -1,4 +1,7 @@
-﻿using System;
+﻿using EmailSender.Application.Abstractions.RepositoryInterfaces;
+using EmailSender.Application.DTOs;
+using EmailSender.Domain.Entities.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +11,35 @@ namespace EmailSender.Application.Services.RegisterServices
 {
     public class RegisterService : IRegisterService
     {
+        public IRegisterRepository _reg;
+        public RegisterService(IRegisterRepository reg)
+        {
+            _reg = reg;
+        }
+
+        public Task<string> Create(RegisterDTO loginDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> Delete(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Register> Get(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Register>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<string> Update(int id, RegisterDTO loginDTO)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
