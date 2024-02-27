@@ -10,5 +10,9 @@ namespace EmailSender.Application.Abstractions.RepositoryInterfaces
     public interface ILoginRepository
     {
         public Task<string> InsertAsync(Login login);
+        public Task<string> UpdateAsync(int id,Login login);
+        public Task DeleteAsync(int id);
+        public Task<Login> GetByIdAsync(int id);
+        public Task<IEnumerable<Login>> GetAll();
     }
 }
