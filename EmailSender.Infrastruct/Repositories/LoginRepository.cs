@@ -1,6 +1,9 @@
 ﻿using EmailSender.Application.Abstractions.RepositoryInterfaces;
 using EmailSender.Application.Services.LoginServices;
+using EmailSender.Domain.Entities.Exceptions;
 using EmailSender.Domain.Entities.Models;
+using EmailSender.Infrastruct.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,29 +14,89 @@ namespace EmailSender.Infrastruct.Repositories
 {
     public class LoginRepository : ILoginRepository
     {
-        public Task DeleteAsync(int id)
+        public ApplicationDbContext _context;
+
+        public LoginRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<IEnumerable<Login>> GetAll()
+        public async Task<string> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var model = await _context.Logins.FirstOrDefaultAsync(x => x.Id == id);
+                if (model is null)
+                {
+                    throw new UsernotFoundException();
+                }
+                _context.Logins.Remove(model);
+                await _context.SaveChangesAsync();
+                return "Deleted";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
         }
 
-        public Task<Login> GetByIdAsync(int id)
+        public async Task<IEnumerable<Login>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Logins.ToListAsync();
+            }
+            catch
+            {
+                return Enumerable.Empty<Login>();
+            }
         }
 
-        public Task<string> InsertAsync(Login login)
+        public async Task<Login> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Logins.FirstOrDefaultAsync(x => x.Id == id);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public Task<string> UpdateAsync(int id, Login login)
+        public async Task<string> InsertAsync(Login login)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _context.Logins.AddAsync(login);
+                await _context.SaveChangesAsync();
+                return "Added";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
+        }
+
+        public async Task<string> UpdateAsync(int id, Login login)
+        {
+            try
+            {
+                var model = await _context.Logins.FirstOrDefaultAsync(x => x.Id == id);
+                if (model is null)
+                {
+                    throw new UsernotFoundException();
+                }
+               
+                model.Email = login.Email;
+                model.Password = login.Password;
+                await _context.SaveChangesAsync();
+                return "Updated";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
         }
     }
 }

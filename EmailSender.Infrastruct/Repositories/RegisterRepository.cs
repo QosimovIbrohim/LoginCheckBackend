@@ -1,5 +1,8 @@
 ﻿using EmailSender.Application.Abstractions.RepositoryInterfaces;
+using EmailSender.Domain.Entities.Exceptions;
 using EmailSender.Domain.Entities.Models;
+using EmailSender.Infrastruct.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +13,89 @@ namespace EmailSender.Infrastruct.Repositories
 {
     public class RegisterRepository : IRegisterRepository
     {
-        public Task DeleteAsync(int id)
+        public ApplicationDbContext _context;
+
+        public RegisterRepository(ApplicationDbContext context)
         {
-            throw new NotImplementedException();
+            _context = context;
         }
 
-        public Task<IEnumerable<Register>> GetAll()
+        public async Task<string> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var model = await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+                if (model is null)
+                {
+                    throw new UsernotFoundException();
+                }
+                _context.Registers.Remove(model);
+                await _context.SaveChangesAsync();
+                return "Deleted";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
         }
 
-        public Task<Register> GetByIdAsync(int id)
+        public async Task<IEnumerable<Register>> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Registers.ToListAsync();
+            }
+            catch
+            {
+                return Enumerable.Empty<Register>();
+            }
         }
 
-        public Task<string> InsertAsync(Register reg)
+        public async Task<Register> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
-        public Task<string> UpdateAsync(int id, Register reg)
+        public async Task<string> InsertAsync(Register reg)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _context.Registers.AddAsync(reg);
+                await _context.SaveChangesAsync();
+                return "Added";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
+        }
+
+        public async Task<string> UpdateAsync(int id, Register reg)
+        {
+            try
+            {
+                var model = await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+                if (model is null)
+                {
+                    throw new UsernotFoundException();
+                }
+
+                model.Email = reg.Email;
+                model.Password = reg.Password;
+                await _context.SaveChangesAsync();
+                return "Updated";
+            }
+            catch
+            {
+                return "Exception with connecting database";
+            }
         }
     }
 }

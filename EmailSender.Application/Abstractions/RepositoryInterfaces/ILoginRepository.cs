@@ -11,7 +11,7 @@ namespace EmailSender.Application.Abstractions.RepositoryInterfaces
     {
         public Task<string> InsertAsync(Login login);
         public Task<string> UpdateAsync(int id,Login login);
-        public Task DeleteAsync(int id);
+        public Task<string> DeleteAsync(int id);
         public Task<Login> GetByIdAsync(int id);
         public Task<IEnumerable<Login>> GetAll();
     }
