@@ -7,5 +7,7 @@ namespace EmailSender.Presentation.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+        [HttpPost]
+
     }
 }

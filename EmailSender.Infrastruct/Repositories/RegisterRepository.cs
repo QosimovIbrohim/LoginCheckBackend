@@ -1,13 +1,8 @@
 ﻿using EmailSender.Application.Abstractions.RepositoryInterfaces;
-using EmailSender.Domain.Entities.Exceptions;
+using EmailSender.Application.DTOs;
 using EmailSender.Domain.Entities.Models;
 using EmailSender.Infrastruct.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmailSender.Infrastruct.Repositories
 {
@@ -20,16 +15,46 @@ namespace EmailSender.Infrastruct.Repositories
             _context = context;
         }
 
+        public async Task<bool> isExists(UserDTO auth)
+        {
+            try
+            {
+                if ((await _context.UserAuths.ToListAsync()).Any(x => x.Email == auth.Email))
+                {
+                    return true;
+                }
+                return false;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+        public async Task<UserAuth> isExists(LoginDTO auth)
+        {
+            try
+            {
+                if ((await _context.UserAuths.ToListAsync()).Any(x => x.Email == auth.Email))
+                {
+                    return await _context.UserAuths.FirstOrDefaultAsync(s => s.Email.Equals(auth.Email));
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public async Task<string> DeleteAsync(int id)
         {
             try
             {
-                var model = await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+                var model = await _context.UserAuths.FirstOrDefaultAsync(x => x.Id == id);
                 if (model is null)
                 {
-                    throw new UsernotFoundException();
+                    return "Not Exists";
                 }
-                _context.Registers.Remove(model);
+                _context.UserAuths.Remove(model);
                 await _context.SaveChangesAsync();
                 return "Deleted";
             }
@@ -39,23 +64,23 @@ namespace EmailSender.Infrastruct.Repositories
             }
         }
 
-        public async Task<IEnumerable<Register>> GetAll()
+        public async Task<IEnumerable<UserAuth>> GetAll()
         {
             try
             {
-                return await _context.Registers.ToListAsync();
+                return await _context.UserAuths.ToListAsync();
             }
             catch
             {
-                return Enumerable.Empty<Register>();
+                return Enumerable.Empty<UserAuth>();
             }
         }
 
-        public async Task<Register> GetByIdAsync(int id)
+        public async Task<UserAuth> GetByIdAsync(int id)
         {
             try
             {
-                return await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+                return await _context.UserAuths.FirstOrDefaultAsync(x => x.Id == id);
             }
             catch
             {
@@ -63,11 +88,11 @@ namespace EmailSender.Infrastruct.Repositories
             }
         }
 
-        public async Task<string> InsertAsync(Register reg)
+        public async Task<string> InsertAsync(UserAuth reg)
         {
             try
             {
-                await _context.Registers.AddAsync(reg);
+                await _context.UserAuths.AddAsync(reg);
                 await _context.SaveChangesAsync();
                 return "Added";
             }
@@ -77,14 +102,14 @@ namespace EmailSender.Infrastruct.Repositories
             }
         }
 
-        public async Task<string> UpdateAsync(int id, Register reg)
+        public async Task<string> UpdateAsync(int id, UserAuth reg)
         {
             try
             {
-                var model = await _context.Registers.FirstOrDefaultAsync(x => x.Id == id);
+                var model = await _context.UserAuths.FirstOrDefaultAsync(x => x.Id == id);
                 if (model is null)
                 {
-                    throw new UsernotFoundException();
+                    return "Not Exists";
                 }
 
                 model.Email = reg.Email;
@@ -96,6 +121,20 @@ namespace EmailSender.Infrastruct.Repositories
             {
                 return "Exception with connecting database";
             }
+        }
+        public async Task UpdateAsync(LoginDTO lg, int code)
+        {
+            var model = await _context.UserAuths.FirstOrDefaultAsync(x => x.Email == lg.Email);
+            if (model is null)
+            {
+                return;
+            }
+
+            model.Email = lg.Email;
+            model.Password = lg.Password;
+            model.Code = code;
+            await _context.SaveChangesAsync();
+
         }
     }
 }

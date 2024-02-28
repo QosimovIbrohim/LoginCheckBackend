@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 
 namespace EmailSender.Domain.Entities.Models
 {
-    public class Login
+    public class UserAuth
     {
         public int Id { get; set; }
 
         [EmailAddress]
-        public required string Email { get; set; }
+        public string Email { get; set; }
 
         [MinLength(6),MaxLength(17)]
-        public required string Password { get; set; }
+        public string Password { get; set; }
+        public int Code { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace EmailSender.Infrastruct.Persistence
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options) => Database.Migrate();
 
-        public DbSet<Login> Logins { get; set; }
-        public DbSet<Register> Registers { get; set; }
+        public DbSet<UserAuth> UserAuths { get; set; }
     }
 }

@@ -20,7 +20,6 @@ namespace EmailSender.Infrastruct
             {
                 ops.UseNpgsql(configuration.GetConnectionString("CS"));
             });
-            services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<IRegisterRepository, RegisterRepository>();
             return services;
         }

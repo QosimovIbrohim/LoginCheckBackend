@@ -1,4 +1,5 @@
-﻿using EmailSender.Domain.Entities.Models;
+﻿using EmailSender.Application.DTOs;
+using EmailSender.Domain.Entities.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,13 @@ namespace EmailSender.Application.Abstractions.RepositoryInterfaces
 {
     public interface IRegisterRepository
     {
-        public Task<string> InsertAsync(Register reg);
-        public Task<string> UpdateAsync(int id, Register reg);
+        public Task<string> InsertAsync(UserAuth reg);
+        public Task<string> UpdateAsync(int id, UserAuth reg);
         public Task<string> DeleteAsync(int id);
-        public Task<Register> GetByIdAsync(int id);
-        public Task<IEnumerable<Register>> GetAll();
+        public Task<UserAuth> GetByIdAsync(int id);
+        public Task<bool> isExists(UserDTO auth);
+        public Task<UserAuth> isExists(LoginDTO auth);
+        public Task<IEnumerable<UserAuth>> GetAll();
+        public Task UpdateAsync(LoginDTO lg, int code);
     }
 }
