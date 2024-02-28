@@ -1,4 +1,5 @@
-﻿using EmailSender.Application.Services.RegisterServices;
+﻿using EmailSender.Application.Services.LoginServices;
+using EmailSender.Application.Services.RegisterServices;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace EmailSender.Application
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<IRegisterService, RegisterService>();
+            services.AddScoped<ILoginService, LoginService>();
             return services;
         }
     }

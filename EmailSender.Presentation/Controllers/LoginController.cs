@@ -15,10 +15,10 @@ namespace EmailSender.Presentation.Controllers
             _log = log;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Login([FromForm] LoginDTO lg)
+        [HttpPut]
+        public async Task<string> Login([FromForm] LoginDTO lg)
         {
-            return Ok(_log.Login(lg).Result);
+            return _log.Login(lg).Result;
         }
     }
 }
